@@ -9,9 +9,14 @@ import com.example.exception.UnauthorizedException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 /**
@@ -48,7 +53,7 @@ public class SocialMediaController {
   }
   
   @PostMapping("messages")
-  public Account postMessage(@RequestBody Message message) {
+  public Message postMessage(@RequestBody Message message) {
     int textLen = message.getMessageText().length();
     if (textLen == 0) throw new BadRequestException("message_text must not be blank.");
     if (textLen > 255) throw new BadRequestException("message_text must not be over 255 characters.");
@@ -60,5 +65,13 @@ public class SocialMediaController {
     
     return messageService.createMessage(message);
   }
+
+  @GetMapping("messages")
+  public List<Message> getAllMessages(@RequestParam String param) {
+      return messageService.getAllMessages();
+  }
+
+  
+  
 
 }
