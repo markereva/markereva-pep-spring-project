@@ -92,4 +92,9 @@ public class SocialMediaController {
     return rowsChanged;
   }
 
+  @GetMapping("accounts/{id}/messages")
+  public List<Message> getMessagesByPostedBy(@PathVariable("id") int id) {
+      return messageService.getMessagesByPostedBy(id);
+  }
+
 }
