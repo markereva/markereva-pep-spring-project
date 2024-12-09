@@ -3,6 +3,7 @@ package com.example.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.exception.BadRequestException;
 import com.example.exception.UnauthorizedException;
 import com.example.service.AccountService;
@@ -42,7 +43,22 @@ public class SocialMediaController {
   public Account postLogin(@RequestBody Account account) {
       Account match = accountService.loginAccount(account);
       if (match == null) throw new UnauthorizedException("Invalid credentials.");
+
       return match;
   }
   
+  @PostMapping("messages")
+  public Account postMessage(@RequestBody Message message) {
+    int textLen = message.getMessageText().length();
+    if (textLen == 0) throw new BadRequestException("message_text must not be blank.");
+    if (textLen > 255) throw new BadRequestException("message_text must not be over 255 characters.");
+
+    // maybe repository .save() call will throw exception if postedBy relation
+    // is invalid, so we don't need to query whether it exists here
+    // Account match = accountService.getUserById(message.getPostedBy());
+    // if (match == null) throw new UnauthorizedException("Author not found in database.");
+    
+    return messageService.createMessage(message);
+  }
+
 }
