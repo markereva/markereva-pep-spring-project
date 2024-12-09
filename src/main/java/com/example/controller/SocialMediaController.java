@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -74,13 +75,21 @@ public class SocialMediaController {
   }
 
   @GetMapping("messages/{id}")
-  public String getMessageById(@PathVariable("id") int id) {
+  public Message getMessageById(@PathVariable("id") int id) {
       return messageService.getMessageById(id);
   }
 
   @DeleteMapping("messages/{id}")
-  public String deleteMessageById(@PathVariable("id") int id) {
+  public int deleteMessageById(@PathVariable("id") int id) {
     return messageService.deleteMessageById(id);
+  }
+
+  @PatchMapping("messages/{id}")
+  public int updateMessageById(@PathVariable("id") int id, @RequestBody Message message) {
+    // Update query with invalid id where clause will return 0, not error
+    int rowsChanged = messageService.updateMessageById(id, message);
+    if (rowsChanged == 0) throw new BadRequestException("message_id must refer to an existing message.");
+    return rowsChanged;
   }
 
 }
