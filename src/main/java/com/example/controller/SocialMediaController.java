@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
 import com.example.exception.BadRequestException;
+import com.example.exception.UnauthorizedException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
@@ -29,13 +30,19 @@ public class SocialMediaController {
 
   @PostMapping("register")
   public Account postRegister(@RequestBody Account account) {
-      //TODO: process POST request
       int uLen = account.getUsername().length();
       int pLen = account.getPassword().length();
       if (uLen == 0) throw new BadRequestException("Username must not be blank.");
       if (pLen < 4) throw new BadRequestException("Password must be at least 4 characters.");
 
       return accountService.createAccount(account);
+  }
+
+  @PostMapping("login")
+  public Account postLogin(@RequestBody Account account) {
+      Account match = accountService.loginAccount(account);
+      if (match == null) throw new UnauthorizedException("Invalid credentials.");
+      return match;
   }
   
 }
