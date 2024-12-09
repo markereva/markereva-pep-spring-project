@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -66,8 +67,11 @@ public class SocialMediaController {
     // is invalid, so we don't need to query whether it exists here
     // Account match = accountService.getUserById(message.getPostedBy());
     // if (match == null) throw new UnauthorizedException("Author not found in database.");
-    
-    return messageService.createMessage(message);
+    try {
+      return messageService.createMessage(message);
+    } catch (DataIntegrityViolationException e) {
+      throw new BadRequestException("Foreign key constraint postedBy was broken.");
+    }
   }
 
   @GetMapping("messages")
