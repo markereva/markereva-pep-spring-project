@@ -11,14 +11,12 @@ import com.example.service.MessageService;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -90,8 +88,14 @@ public class SocialMediaController {
   @PatchMapping("messages/{id}")
   public int updateMessageById(@PathVariable("id") int id, @RequestBody Message message) {
     // Update query with invalid id where clause will return 0, not error
-    int rowsChanged = messageService.updateMessageById(id, message);
+    String messageText = message.getMessageText();
+    int textLen = messageText.length();
+    if (textLen == 0) throw new BadRequestException("message_text must not be blank.");
+    if (textLen > 255) throw new BadRequestException("message_text must not be over 255 characters.");
+
+    int rowsChanged = messageService.updateMessageById(id, messageText);
     if (rowsChanged == 0) throw new BadRequestException("message_id must refer to an existing message.");
+    
     return rowsChanged;
   }
 
