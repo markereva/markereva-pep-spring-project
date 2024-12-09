@@ -2,6 +2,8 @@ package com.example.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.example.entity.Message;
@@ -31,10 +33,12 @@ public class MessageService {
     return messageRepository.findAll();
   }
 
+  @Transactional
   public int deleteMessageById(int id) {
     return messageRepository.deleteById(id);
   }
 
+  @Transactional
   public int updateMessageById(int id, String text) {
     return messageRepository.updateMessageById(id, text);
   }

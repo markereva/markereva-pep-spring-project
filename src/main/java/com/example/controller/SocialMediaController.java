@@ -6,7 +6,6 @@ import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.exception.BadRequestException;
 import com.example.exception.ConflictException;
-import com.example.exception.EmptyResponse;
 import com.example.exception.UnauthorizedException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
@@ -15,10 +14,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.apache.el.stream.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.util.Optionals;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,7 +74,7 @@ public class SocialMediaController {
     try {
       return messageService.createMessage(message);
     } catch (DataIntegrityViolationException e) {
-      throw new BadRequestException("Foreign key constraint postedBy was broken.");
+      throw new BadRequestException("Foreign key postedBy was invalid.");
     }
   }
 
@@ -100,7 +96,7 @@ public class SocialMediaController {
 
   @PatchMapping("messages/{id}")
   public int updateMessageById(@PathVariable("id") int id, @RequestBody Message message) {
-    // Update query with invalid id where clause will return 0, not error
+    // Update query with invalid "id where" clause will return 0, not error
     String messageText = message.getMessageText();
     int textLen = messageText.length();
     if (textLen == 0) throw new BadRequestException("message_text must not be blank.");
