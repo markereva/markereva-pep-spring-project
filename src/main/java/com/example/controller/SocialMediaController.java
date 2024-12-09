@@ -30,12 +30,15 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 public class SocialMediaController {
-
-  @Autowired
+  
   private AccountService accountService;
 
-  @Autowired
   private MessageService messageService;
+
+  public SocialMediaController(AccountService accountService, MessageService messageService) {
+    this.accountService = accountService;
+    this.messageService = messageService;
+  }
 
   @PostMapping("register")
   public Account postRegister(@RequestBody Account account) {
@@ -49,7 +52,7 @@ public class SocialMediaController {
 
   @PostMapping("login")
   public Account postLogin(@RequestBody Account account) {
-      Account match = accountService.loginAccount(account);
+      Account match = accountService.loginAccount(account.getUsername(), account.getPassword());
       if (match == null) throw new UnauthorizedException("Invalid credentials.");
 
       return match;
