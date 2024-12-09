@@ -6,6 +6,7 @@ import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.exception.BadRequestException;
 import com.example.exception.ConflictException;
+import com.example.exception.EmptyResponse;
 import com.example.exception.UnauthorizedException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
@@ -14,7 +15,11 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.apache.el.stream.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.util.Optionals;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -88,8 +93,9 @@ public class SocialMediaController {
   }
 
   @DeleteMapping("messages/{id}")
-  public int deleteMessageById(@PathVariable("id") int id) {
-    return messageService.deleteMessageById(id);
+  public ResponseEntity<?> deleteMessageById(@PathVariable("id") int id) {
+    int rowsAffected = messageService.deleteMessageById(id);
+    return ResponseEntity.ok(rowsAffected == 0 ? "" : rowsAffected);
   }
 
   @PatchMapping("messages/{id}")
