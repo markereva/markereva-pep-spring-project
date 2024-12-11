@@ -112,5 +112,4 @@ public class SocialMediaController {
   public List<Message> getMessagesByPostedBy(@PathVariable("id") int id) {
       return messageService.getMessagesByPostedBy(id);
   }
-
 }
